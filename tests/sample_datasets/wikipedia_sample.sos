@@ -1,0 +1,22 @@
+.HODE
+..TEGNSETT ANSI
+..SOSI-VERSJON 3.0
+..SOSI-NIVÅ 4
+..TRANSPAR
+...KOORDSYS 2  !(Koordinatsystem = NGO1948 akse II)
+...ORIGO-NØ  35599 10289 !(Origo, i hele meter, som skal tillegges koordinatene til punktene. Det valigste er at det her står 0  0. Da får koordinaene sine sanne verdier.)
+...ENHET 0.001  !(millimeter)
+..OMRÅDE
+...MIN-NØ 35599 10289
+...MAX-NØ 37402 11218
+..DATO 20061123   !(Dato i ISO 8601 format)
+..KVALITET * * * * *
+.LINJE 1:
+..OBJTYPE EiendomsGrense !(den gamle formen: ..LTEMA 4011  !(4011= kode for eiendomsgrense) er utgått
+..NØ
+245536 568364 ...PTEMA 4064 ...KP 1 !(koordinater i millimeter – skal tillegges origo)
+..NØ
+207548 547931 ...PTEMA 4057  !(4057 = kode for umerket grensepunkt)
+..NØ
+203510 555438 ...PTEMA 4064   !(4064 = kode for grensepåle)
+.SLUTT !(må alltid avslutte fila)
