@@ -1,1 +1,2 @@
-mod head;
+pub mod head;
+pub mod lines;
