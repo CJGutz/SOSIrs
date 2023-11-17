@@ -1,9 +1,11 @@
 mod comments;
+mod feature;
 mod keys;
 mod parse_head;
 
 use std::vec;
 
+use feature::sosi_feature_to_geojson;
 use keys::parse_definition_key;
 
 use crate::file_rep::lines::DefinitionData;
@@ -33,10 +35,14 @@ pub fn parse_sosi_to_geojson(sosi_text: String) -> Result<geojson::GeoJson, &'st
 
     let head = features.remove(0).lines().collect::<Vec<&str>>();
 
-    let _file_definitions = head
+    let file_definitions = head
         .iter()
         .map(|line| parse_definition_key(line))
         .collect::<Vec<Option<DefinitionData>>>();
+
+    dbg!(file_definitions);
+
+    sosi_feature_to_geojson(features.remove(0));
 
     Ok(geojson::GeoJson::Feature(geojson::Feature {
         bbox: None,
