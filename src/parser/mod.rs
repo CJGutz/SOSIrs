@@ -1,5 +1,6 @@
 mod comments;
 mod feature;
+mod geotype;
 mod keys;
 mod parse_head;
 
@@ -9,6 +10,7 @@ use feature::sosi_feature_to_geojson;
 use keys::parse_definition_key;
 
 use crate::file_rep::lines::DefinitionData;
+use geojson;
 
 use regex;
 
@@ -42,13 +44,7 @@ pub fn parse_sosi_to_geojson(sosi_text: String) -> Result<geojson::GeoJson, &'st
 
     dbg!(file_definitions);
 
-    sosi_feature_to_geojson(features.remove(0));
-
-    Ok(geojson::GeoJson::Feature(geojson::Feature {
-        bbox: None,
-        geometry: None,
-        id: None,
-        properties: None,
-        foreign_members: None,
-    }))
+    let feat = sosi_feature_to_geojson(features.remove(0));
+    println!("{:?}", feat);
+    return Ok(geojson::GeoJson::Feature(feat.unwrap()));
 }

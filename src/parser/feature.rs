@@ -1,6 +1,9 @@
+use std::vec;
+
 use geojson::Feature;
 
 use crate::file_rep::lines::DefinitionData;
+use crate::parser::geotype::match_geometry;
 
 use super::keys::parse_definition_key;
 
@@ -29,7 +32,7 @@ pub fn sosi_feature_to_geojson(text: &str) -> Option<Feature> {
         return None;
     }
     let coords_index = found.unwrap().start();
-    let coords = &text[coords_index..]
+    let coords = text[coords_index..]
         .trim()
         .lines()
         .map(|l| str_to_coords(l))
@@ -37,12 +40,25 @@ pub fn sosi_feature_to_geojson(text: &str) -> Option<Feature> {
         .map(|c| c.unwrap())
         .collect::<Vec<(f64, f64)>>();
 
-    let properties = &text[..coords_index]
+    let properties = text[..coords_index]
         .lines()
         .map(|t| parse_definition_key(t))
         .filter(|d| d.is_some())
         .map(|d| d.unwrap())
         .collect::<Vec<DefinitionData>>();
 
-    return None;
+    let geotype = properties.first();
+    if geotype.is_none() {
+        return None;
+    }
+
+    let geometry = match_geometry(geotype.unwrap().key.as_str(), coords);
+
+    Some(Feature {
+        bbox: None,
+        geometry: Some(geometry),
+        id: None,
+        properties: None,
+        foreign_members: None,
+    })
 }
