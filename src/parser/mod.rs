@@ -4,13 +4,11 @@ mod geotype;
 mod keys;
 mod parse_head;
 
-use std::vec;
-
 use feature::sosi_feature_to_geojson;
 use keys::parse_definition_key;
 
 use crate::file_rep::lines::DefinitionData;
-use geojson;
+use geojson::{self, Feature};
 
 use regex;
 
@@ -42,9 +40,17 @@ pub fn parse_sosi_to_geojson(sosi_text: String) -> Result<geojson::GeoJson, &'st
         .map(|line| parse_definition_key(line))
         .collect::<Vec<Option<DefinitionData>>>();
 
-    dbg!(file_definitions);
+    let geojson_features = features.iter().map(|f| sosi_feature_to_geojson(f));
+    let filtered_features = geojson_features
+        .filter(|f| f.is_some())
+        .map(|f| f.unwrap())
+        .collect::<Vec<Feature>>();
 
-    let feat = sosi_feature_to_geojson(features.remove(0));
-    println!("{:?}", feat);
-    return Ok(geojson::GeoJson::Feature(feat.unwrap()));
+    return Ok(geojson::GeoJson::FeatureCollection(
+        geojson::FeatureCollection {
+            bbox: None,
+            features: filtered_features,
+            foreign_members: None,
+        },
+    ));
 }

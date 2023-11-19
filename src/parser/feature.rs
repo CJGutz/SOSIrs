@@ -38,6 +38,7 @@ pub fn sosi_feature_to_geojson(text: &str) -> Option<Feature> {
         .map(|l| str_to_coords(l))
         .filter(|c| c.is_ok())
         .map(|c| c.unwrap())
+        .map(|(x, y)| (y / 10000000.0, x / 10000000.0))
         .collect::<Vec<(f64, f64)>>();
 
     let properties = text[..coords_index]
@@ -48,7 +49,7 @@ pub fn sosi_feature_to_geojson(text: &str) -> Option<Feature> {
         .collect::<Vec<DefinitionData>>();
 
     let geotype = properties.first();
-    if geotype.is_none() {
+    if geotype.is_none() || coords.is_empty() {
         return None;
     }
 
