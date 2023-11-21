@@ -7,7 +7,7 @@ mod parse_head;
 use feature::sosi_feature_to_geojson;
 use keys::parse_definition_key;
 
-use crate::file_rep::lines::DefinitionData;
+use crate::{file_rep::lines::DefinitionData, parser::comments::remove_comment};
 use geojson::{self, Feature};
 
 use regex;
@@ -40,8 +40,11 @@ pub fn parse_sosi_to_geojson(sosi_text: String) -> Result<geojson::GeoJson, &'st
         .map(|line| parse_definition_key(line))
         .collect::<Vec<Option<DefinitionData>>>();
 
-    let geojson_features = features.iter().map(|f| sosi_feature_to_geojson(f));
-    let filtered_features = geojson_features
+    dbg!(file_definitions);
+
+    let geojson_features = features
+        .iter()
+        .map(|f| sosi_feature_to_geojson(f))
         .filter(|f| f.is_some())
         .map(|f| f.unwrap())
         .collect::<Vec<Feature>>();
@@ -49,7 +52,7 @@ pub fn parse_sosi_to_geojson(sosi_text: String) -> Result<geojson::GeoJson, &'st
     return Ok(geojson::GeoJson::FeatureCollection(
         geojson::FeatureCollection {
             bbox: None,
-            features: filtered_features,
+            features: geojson_features,
             foreign_members: None,
         },
     ));

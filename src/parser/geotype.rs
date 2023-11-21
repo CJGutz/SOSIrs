@@ -1,6 +1,6 @@
 use geojson::{
     Geometry,
-    Value::{LineString, Point, Polygon},
+    Value::{LineString, MultiPoint, Point, Polygon},
 };
 
 pub fn match_geometry(sosi_type: &str, coords: Vec<(f64, f64)>) -> Geometry {
@@ -15,6 +15,7 @@ pub fn match_geometry(sosi_type: &str, coords: Vec<(f64, f64)>) -> Geometry {
             let (x, y) = coords.first().unwrap();
             Point(vec![*x, *y])
         }
+        "SVERM" => MultiPoint(coordinates),
         _ => panic!("Unknown geotype"),
     };
     return Geometry::new(value);

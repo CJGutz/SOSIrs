@@ -3,7 +3,7 @@ use std::vec;
 use geojson::Feature;
 
 use crate::file_rep::lines::DefinitionData;
-use crate::parser::geotype::match_geometry;
+use crate::parser::{comments::remove_comment, geotype::match_geometry};
 
 use super::keys::parse_definition_key;
 
@@ -35,14 +35,16 @@ pub fn sosi_feature_to_geojson(text: &str) -> Option<Feature> {
     let coords = text[coords_index..]
         .trim()
         .lines()
+        .map(|l| remove_comment(l))
         .map(|l| str_to_coords(l))
         .filter(|c| c.is_ok())
         .map(|c| c.unwrap())
-        .map(|(x, y)| (y / 10000000.0, x / 10000000.0))
+        .map(|(y, x)| (x / 10000000.0, y / 10000000.0))
         .collect::<Vec<(f64, f64)>>();
 
     let properties = text[..coords_index]
         .lines()
+        .map(|l| remove_comment(l))
         .map(|t| parse_definition_key(t))
         .filter(|d| d.is_some())
         .map(|d| d.unwrap())
